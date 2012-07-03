@@ -1,0 +1,7 @@
+[
+    {
+        "caption": "Markdown Slideshow: Default theme",
+        "command": "markdown_slideshow",
+        "args": {"theme": "default"}
+    }
+]
