@@ -3,6 +3,8 @@ MarkDown Slideshow
 
 A Sublime Text 2 plugin for slideshow in your web browser from markdown file.
 
+[Base example](http://ogom.github.com/sublimetext-markdown-slideshow/examples/base.html)
+
 ---
 
 ###Installation
