@@ -12,7 +12,7 @@ Download is available from github, Install the folder of Sublime Text 2 Packages
     $ git clone git://github.com/ogom/sublimetext-markdown-slideshow.git
 
 
-####Sample Key Binding
+####Sample Key Bindings
 Let's add key bindings - user.
 
     [
