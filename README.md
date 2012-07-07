@@ -3,15 +3,16 @@ Markdown Slideshow
 
 A Sublime Text 2 plugin for slideshow in your web browser from markdown file.
 
-[Base example](http://ogom.github.com/sublimetext-markdown-slideshow/examples/base.html)
+Is a [Base example](http://ogom.github.com/sublimetext-markdown-slideshow/examples/base.html).
 
 ---
 
 ### Installation
 #### Package Control
-The easy to install using the [Package Control](http://wbond.net/sublime_packages/package_control).  
-Press `ctrl+shift+p` (Windows, Linux) or `cmd+shift+p` (OS X). then `Package Control: Install Package`.  
-To install at the command of `Markdown Slideshow`.
+The easy to install using the [Package Control](http://wbond.net/sublime_packages/package_control).
+
+1. Press `ctrl+shift+p` (Windows) or `cmd+shift+p` (OS X). then `Package Control: Install Package`.
+2. To install at the command of `Markdown Slideshow`.
 
 
 #### Github
@@ -33,7 +34,7 @@ Let's add key bindings - user.
 ---
 ### How to use
 #### Output Hints
-Separates the slide is '----' or '___' or '***' be returned to hr tab at markdown.  
+Separates the slide is `----` or `___` or `***` be returned to hr tab at markdown.  
 
 #### Workflow
 1. Create a contents for markdown.
