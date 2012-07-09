@@ -29,15 +29,25 @@ class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
     for page in pages:
       article += '<article>\n' + page + '</article>\n\n'   
 
-    return template.replace("{{ article }}", article).encode('utf-8')
+    return template.replace("{{ article }}", article)
 
-  def run(self, edit, theme='default'):
+  def run(self, edit, theme='default', save=True, path=None):
     contents = self.view.substr(sublime.Region(0, self.view.size()))
     template = self.get_template(theme)
     html = self.get_slideshow(contents, template)
 
-    temp = tempfile.NamedTemporaryFile(delete=False, suffix=".html")
-    temp.write(html)
-    temp.close()
+    if save:
+      if not path is None and not os.path.isdir(path):
+        path=None
+      
+      temp = tempfile.NamedTemporaryFile(suffix=".html", dir=path, delete=False)
+      temp.write(html.encode('utf-8'))
+      temp.close()
 
-    webbrowser.open_new_tab(temp.name)
+      webbrowser.open_new_tab(temp.name)
+    else:
+      view = self.view.window().new_file()
+      edit = view.begin_edit()
+      view.insert(edit, 0, html)
+      view.end_edit(edit)
+

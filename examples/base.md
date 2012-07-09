@@ -19,7 +19,7 @@ Title bottom
 
 #### Sub title
 
-Place to write  
+Place to write
 New line
 
     Enclosure

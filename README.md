@@ -27,9 +27,20 @@ Let's add key bindings - user.
 
     [
       { 
-        "keys": ["alt+s"], "command": "markdown_slideshow", "args": {"theme": "default"}
+        "keys": ["alt+s"], "command": "markdown_slideshow",
+        "args": {
+          "theme": "default",
+          "save": true,
+          "path": "/tmp"
+        }
       }
     ]
+
+##### args
+* theme : Name of the theme.
+* save : If you do not want to save is false. Default is true.
+* path : Path to save the file. Default is temporary file path.
+
 
 ---
 ### How to use
