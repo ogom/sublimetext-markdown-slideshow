@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Sublimetext-markdown-slideshow by ogom</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Sublimetext-markdown-slideshow</h1>
+        <p class="header">sublime text 2 plugin for markdown slideshow</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/ogom/sublimetext-markdown-slideshow/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/ogom/sublimetext-markdown-slideshow/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/ogom/sublimetext-markdown-slideshow">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/ogom">ogom</a></p>
+
+
+      </header>
+      <section>
+        <h1>Markdown Slideshow</h1>
+
+<p>A Sublime Text 2 plugin for slideshow in your web browser from markdown file.</p>
+
+<p>Is a <a href="http://ogom.github.com/sublimetext-markdown-slideshow/examples/base.html">Base example</a>.</p>
+
+<hr><h3>Installation</h3>
+
+<h4>Package Control</h4>
+
+<p>The easy to install using the <a href="http://wbond.net/sublime_packages/package_control">Package Control</a>.</p>
+
+<ol>
+<li>Press <code>ctrl+shift+p</code> (Windows) or <code>cmd+shift+p</code> (OS X). then <code>Package Control: Install Package</code>.</li>
+<li>To install at the command of <code>Markdown Slideshow</code>.</li>
+</ol><h4>Github</h4>
+
+<p>Download is available from github, Install the folder of Sublime Text 2 Packages.</p>
+
+<pre><code>$ git clone git://github.com/ogom/sublimetext-markdown-slideshow.git
+</code></pre>
+
+<hr><h4>Sample Key Bindings</h4>
+
+<p>Let's add key bindings - user.</p>
+
+<pre><code>[
+  { 
+    "keys": ["alt+s"], "command": "markdown_slideshow",
+    "args": {
+      "theme": "default",
+      "save": true,
+      "path": "/tmp"
+    }
+  }
+]
+</code></pre>
+
+<h4>args</h4>
+
+<ul>
+<li>theme : Name of the theme.</li>
+<li>save : If you do not want to save is false. Default is true.</li>
+<li>path : Path to save the file. Default is temporary file path.</li>
+</ul><hr><h3>How to use</h3>
+
+<h4>Output Hints</h4>
+
+<p>Separates the slide is <code>----</code> or <code>___</code> or <code>***</code> be returned to hr tab at markdown.  </p>
+
+<h4>Workflow</h4>
+
+<ol>
+<li>Create a contents for markdown.</li>
+<li>Preview the slides in your browser.</li>
+</ol><hr><h3>Uses</h3>
+
+<ul>
+<li><a href="https://github.com/waylan/Python-Markdown">Python-Markdown</a></li>
+<li><a href="http://code.google.com/p/html5slides/">A Google HTML5 slide template</a></li>
+</ul><h3>Licence</h3>
+
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a></p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+		
+  </body>
+</html>
