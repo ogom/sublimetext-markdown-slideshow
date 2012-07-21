@@ -1,53 +1,65 @@
-import sublime, sublime_plugin
+import sublime
+import sublime_plugin
 import os
 import tempfile
 import markdown
 import webbrowser
+import shutil
+
 
 class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
-  """ slideshow in your web browser from file contents """
+    """ slideshow in your web browser from file contents """
 
-  def read_file(self, file):
-    if not os.path.isfile(file):
-      raise Exception(file + " file not found!")
+    path_theme = None
 
-    return open(file, 'r').read().decode('utf-8')
+    def read_file(self, file):
+        if not os.path.isfile(file):
+            raise Exception(file + " file not found!")
 
-  def get_template(self, theme='default'):
-    path = os.path.join(sublime.packages_path(), 'Markdown Slideshow', 'themes', theme)
-    base = self.read_file(os.path.join(path, 'base.html'))
-    css = self.read_file(os.path.join(path, 'css','styles.css'))
-    js = self.read_file(os.path.join(path, 'js', 'slides.js'))
+        return open(file, 'r').read().decode('utf-8')
 
-    return base.replace("{{ style }}", '\n' + css).replace("{{ script }}", '\n' + js)
+    def get_template(self, theme='default'):
+        self.path_theme = os.path.join(sublime.packages_path(), 'Markdown Slideshow', 'themes', theme)
+        base = self.read_file(os.path.join(self.path_theme, 'base.html'))
+        css = self.read_file(os.path.join(self.path_theme, 'css', 'styles.css'))
+        js = self.read_file(os.path.join(self.path_theme, 'js', 'slides.js'))
 
-  def get_slideshow(self, contents, template):
-    html = markdown.markdown(contents) + '\n'
-    article = '\n'
+        return base.replace("{{ style }}", '\n' + css).replace("{{ script }}", '\n' + js)
 
-    pages = html.split('<hr />\n')
-    for page in pages:
-      article += '<article>\n' + page + '</article>\n\n'   
+    def get_slideshow(self, contents, template):
+        html = markdown.markdown(contents) + '\n'
+        article = '\n'
 
-    return template.replace("{{ article }}", article)
+        pages = html.split('<hr />\n')
+        for page in pages:
+            article += '<article>\n' + page + '</article>\n\n'
 
-  def run(self, edit, theme='default', save=True, path=None):
-    contents = self.view.substr(sublime.Region(0, self.view.size()))
-    template = self.get_template(theme)
-    html = self.get_slideshow(contents, template)
+        return template.replace("{{ article }}", article)
 
-    if save:
-      if not path is None and not os.path.isdir(path):
-        path=None
-      
-      temp = tempfile.NamedTemporaryFile(suffix=".html", dir=path, delete=False)
-      temp.write(html.encode('utf-8'))
-      temp.close()
+    def copy_images(self, dest):
+        images_dir = os.path.join(self.path_theme, "images")
+        if (os.path.isdir(images_dir)):
+            shutil.copytree(images_dir, os.path.join(dest, "images"))
 
-      webbrowser.open_new_tab(temp.name)
-    else:
-      view = self.view.window().new_file()
-      edit = view.begin_edit()
-      view.insert(edit, 0, html)
-      view.end_edit(edit)
+    def run(self, edit, theme='default', save=True, path=None):
+        contents = self.view.substr(sublime.Region(0, self.view.size()))
+        template = self.get_template(theme)
+        html = self.get_slideshow(contents, template)
+
+        if save:
+            if not path is None and not os.path.isdir(path):
+                path = None
+
+            tempDir = tempfile.mkdtemp(dir=path)
+            temp = open(os.path.join(tempDir, "slide.html"), "w")
+            temp.write(html.encode('utf-8'))
+            temp.close()
+            self.copy_images(tempDir)
+
+            webbrowser.open_new_tab(temp.name)
+        else:
+            view = self.view.window().new_file()
+            edit = view.begin_edit()
+            view.insert(edit, 0, html)
+            view.end_edit(edit)
 
