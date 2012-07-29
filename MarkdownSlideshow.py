@@ -27,7 +27,7 @@ class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
         return base.replace("{{ style }}", '\n' + css).replace("{{ script }}", '\n' + js)
 
     def get_slideshow(self, contents, template):
-        html = markdown.markdown(contents) + '\n'
+        html = markdown.markdown(contents, ['fenced_code', 'tables']) + '\n'
         article = '\n'
 
         pages = html.split('<hr />\n')

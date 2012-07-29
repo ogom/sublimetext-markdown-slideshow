@@ -42,6 +42,32 @@ New line
 
 ---
 
+Extensions
+----------
+
+---
+
+### Fenced Code Blocks
+
+~~~~{.python}
+# python code
+~~~~
+
+~~~~.html
+<p>HTML Document</p>
+~~~~
+
+---
+
+### Tables
+
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
+
+---
+
 Thank you!
 ==========
 
