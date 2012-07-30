@@ -6,9 +6,14 @@ import tempfile
 import webbrowser
 import shutil
 
+
+plugin_path = os.path.dirname(os.path.abspath(__file__))
+
 # add local libs
-if os.path.join(sublime.packages_path(), 'Markdown Slideshow', 'lib') not in sys.path:
-    sys.path.append(os.path.join(sublime.packages_path(), 'Markdown Slideshow', 'lib'))
+markdown_lib_path = os.path.join(plugin_path, 'lib')
+
+if markdown_lib_path not in sys.path:
+    sys.path.append(markdown_lib_path)
 
 from markdown import markdown
 
@@ -25,7 +30,7 @@ class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
         return open(file, 'r').read().decode('utf-8')
 
     def get_template(self, theme='default'):
-        self.path_theme = os.path.join(sublime.packages_path(), 'Markdown Slideshow', 'themes', theme)
+        self.path_theme = os.path.join(plugin_path, 'themes', theme)
         base = self.read_file(os.path.join(self.path_theme, 'base.html'))
         css = self.read_file(os.path.join(self.path_theme, 'css', 'styles.css'))
         js = self.read_file(os.path.join(self.path_theme, 'js', 'slides.js'))
