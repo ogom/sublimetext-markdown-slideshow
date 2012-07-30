@@ -1,10 +1,16 @@
 import sublime
 import sublime_plugin
+import sys
 import os
 import tempfile
-import markdown
 import webbrowser
 import shutil
+
+# add local libs
+if os.path.join(sublime.packages_path(), 'Markdown Slideshow', 'lib') not in sys.path:
+    sys.path.append(os.path.join(sublime.packages_path(), 'Markdown Slideshow', 'lib'))
+
+from markdown import markdown
 
 
 class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
@@ -27,7 +33,7 @@ class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
         return base.replace("{{ style }}", '\n' + css).replace("{{ script }}", '\n' + js)
 
     def get_slideshow(self, contents, template):
-        html = markdown.markdown(contents, ['fenced_code', 'tables']) + '\n'
+        html = markdown(contents, ['fenced_code', 'tables']) + '\n'
         article = '\n'
 
         pages = html.split('<hr />\n')
@@ -62,4 +68,3 @@ class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
             edit = view.begin_edit()
             view.insert(edit, 0, html)
             view.end_edit(edit)
-
