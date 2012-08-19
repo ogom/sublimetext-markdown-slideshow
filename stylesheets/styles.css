@@ -107,6 +107,18 @@ ol li {
   padding-left: 20px;
 }
 
+section ul li {
+  list-style: outside;
+  padding-left: 0px;
+  margin-left: 40px;
+}
+
+section ol li {
+  list-style: decimal outside;
+  padding-left: 0px;
+  margin-left: 40px;
+}
+
 blockquote {
   margin: 0;
   padding: 0 0 0 20px;
