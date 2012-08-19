@@ -32,9 +32,8 @@
       <section>
         <h1>Markdown Slideshow</h1>
 
-<p>A Sublime Text 2 plugin for slideshow in your web browser from markdown file.</p>
-
-<p>Is a <a href="http://ogom.github.com/sublimetext-markdown-slideshow/examples/base.html">Base example</a>.</p>
+<p>A Sublime Text 2 plugin for slideshow in your web browser from markdown file.<br>
+Create a contents for markdown and then preview the slides in your browser.</p>
 
 <hr><h3>Installation</h3>
 
@@ -45,60 +44,276 @@
 <ol>
 <li>Press <code>ctrl+shift+p</code> (Windows) or <code>cmd+shift+p</code> (OS X). then <code>Package Control: Install Package</code>.</li>
 <li>To install at the command of <code>Markdown Slideshow</code>.</li>
-</ol><h4>Github</h4>
+</ol><hr><h4>Github</h4>
 
 <p>Download is available from github, Install the folder of Sublime Text 2 Packages.</p>
 
 <pre><code>$ git clone git://github.com/ogom/sublimetext-markdown-slideshow.git
 </code></pre>
 
-<hr><h4>Sample Key Bindings</h4>
+<hr><h3>Usage</h3>
+
+<h4>Sample Key Bindings</h4>
 
 <p>Let's add key bindings - user.</p>
 
 <pre><code>[
-  { 
+  {
     "keys": ["alt+s"], "command": "markdown_slideshow",
-    "args": {
-      "theme": "default",
-      "save": true,
-      "path": "/tmp"
-    }
+    "args": {"theme": "default"}
   }
 ]
 </code></pre>
 
-<h4>args</h4>
+<h5>args</h5>
 
 <ul>
-<li>theme : Name of the theme.</li>
-<li>save : If you do not want to save is false. Default is true.</li>
-<li>path : Path to save the file. Default is temporary file path.</li>
+<li>theme         : Theme of the slide. (default, io2012, io2011, ...) </li>
+<li>extensions    : Provided to expand the base syntax. (extra, fenced_code, tables, ...)</li>
+<li>clean         : Theme was to clean the output. (boolean, default False)</li>
+<li>output_file   : File to output slide.</li>
+<li>browser       : View in Web Browser. (boolean, default True)</li>
+<li>themes        : Path of the custom themes</li>
 </ul><hr><h3>How to use</h3>
 
 <h4>Output Hints</h4>
 
-<p>Separates the slide is <code>----</code> or <code>___</code> or <code>***</code> be returned to hr tab at markdown.  </p>
+<p>Separates the slide is <code>---</code> or <code>___</code> or <code>***</code> be returned to hr tab at markdown.<br>
+io2012 or io2011 of the theme to change the class of article in the horizon. </p>
 
-<h4>Workflow</h4>
+<table>
+<tr>
+<th>horizon</th>
+<th>article class</th>
+</tr>
+<tr>
+<td>---</td>
+<td>none</td>
+</tr>
+<tr>
+<td>___</td>
+<td>smaller</td>
+</tr>
+<tr>
+<td>***</td>
+<td>fill</td>
+</tr>
+</table><hr><h3>Examples</h3>
 
-<ol>
-<li>Create a contents for markdown.</li>
-<li>Preview the slides in your browser.</li>
-</ol><hr><h3>Uses</h3>
+<h4>Theme of io2012</h4>
+
+<p>Markdown the original</p>
+
+<pre lang="markdown"><code>I/O 2012 slide example
+======================
+
+---
+
+### Simple slide with header and text
+Here is the text of hgroup.
+
+This is a slide with just text. This is a slide with just text.  
+This is a slide with just text. This is a slide with just text.  
+This is a slide with just text. This is a slide with just text.  
+
+There is more text just underneath.
+
+___
+
+### Simple slide with header and text (small font)
+Here is the text of hgroup.
+
+This is a slide with just text. This is a slide with just text.  
+This is a slide with just text. This is a slide with just text.  
+This is a slide with just text. This is a slide with just text.  
+
+There is more text just underneath.
+
+***
+
+### Image filling the slide (with optional header)
+Here is the text of hgroup.
+
+![syaraku](images/syaraku_eye.jpg)
+
+There is more text just underneath.
+</code></pre>
+
+<p>The converted html</p>
+
+<div class="highlight"><pre><span class="nt">&lt;slide&gt;</span>
+  <span class="nt">&lt;hgroup&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>
+      I/O 2012 slide example
+    <span class="nt">&lt;/h1&gt;</span>
+  <span class="nt">&lt;/hgroup&gt;</span>
+<span class="nt">&lt;/slide&gt;</span>
+
+<span class="nt">&lt;slide&gt;</span>
+  <span class="nt">&lt;hgroup&gt;</span>
+    <span class="nt">&lt;h3&gt;</span>
+      Simple slide with header and text
+    <span class="nt">&lt;/h3&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+      Here is the text of hgroup.
+    <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/hgroup&gt;</span>
+  <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"none"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+      This is a slide with just text. This is a slide with just text.<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+      This is a slide with just text. This is a slide with just text.<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+      This is a slide with just text. This is a slide with just text.<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+      There is more text just underneath.
+    <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/article&gt;</span>
+<span class="nt">&lt;/slide&gt;</span>
+
+<span class="nt">&lt;slide&gt;</span>
+  <span class="nt">&lt;hgroup&gt;</span>
+    <span class="nt">&lt;h3&gt;</span>
+      Simple slide with header and text (small font)
+    <span class="nt">&lt;/h3&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+      Here is the text of hgroup.
+    <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/hgroup&gt;</span>
+  <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"smaller"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+      This is a slide with just text. This is a slide with just text.<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+      This is a slide with just text. This is a slide with just text.<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+      This is a slide with just text. This is a slide with just text.<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+      There is more text just underneath.
+    <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/article&gt;</span>
+<span class="nt">&lt;/slide&gt;</span>
+
+<span class="nt">&lt;slide&gt;</span>
+  <span class="nt">&lt;hgroup&gt;</span>
+    <span class="nt">&lt;h3&gt;</span>
+      Image filling the slide (with optional header)
+    <span class="nt">&lt;/h3&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+      Here is the text of hgroup.
+    <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/hgroup&gt;</span>
+  <span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"fill"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+      <span class="nt">&lt;img</span> <span class="na">alt=</span><span class="s">"syaraku"</span> <span class="na">src=</span><span class="s">"images/syaraku_eye.jpg"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;p&gt;</span>
+      There is more text just underneath.
+    <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/article&gt;</span>
+<span class="nt">&lt;/slide&gt;</span>
+</pre></div>
+
+<h4>Theme of io2011</h4>
+
+<p>Markdown the original</p>
+
+<pre lang="markdown"><code>I/O 2011 slide example
+======================
+
+---
+
+### Simple slide with header and text
+
+This is a slide with just text. This is a slide with just text.  
+This is a slide with just text. This is a slide with just text.  
+This is a slide with just text. This is a slide with just text.  
+
+There is more text just underneath.
+
+___
+
+### Simple slide with header and text (small font)
+
+This is a slide with just text. This is a slide with just text.  
+This is a slide with just text. This is a slide with just text.  
+This is a slide with just text. This is a slide with just text.  
+
+There is more text just underneath.
+
+***
+
+### Image filling the slide (with optional header)
+
+![syaraku](images/syaraku_eye.jpg)
+
+There is more text just underneath.
+</code></pre>
+
+<p>The converted html</p>
+
+<div class="highlight"><pre><span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"none"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;h1&gt;</span>
+    I/O 2011 slide example
+  <span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+
+<span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"none"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;h3&gt;</span>
+    Simple slide with header and text
+  <span class="nt">&lt;/h3&gt;</span>
+  <span class="nt">&lt;p&gt;</span>
+    This is a slide with just text. This is a slide with just text.<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+    This is a slide with just text. This is a slide with just text.<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+    This is a slide with just text. This is a slide with just text.<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;p&gt;</span>
+    There is more text just underneath.
+  <span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+
+<span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"smaller"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;h3&gt;</span>
+    Simple slide with header and text (small font)
+  <span class="nt">&lt;/h3&gt;</span>
+  <span class="nt">&lt;p&gt;</span>
+    This is a slide with just text. This is a slide with just text.<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+    This is a slide with just text. This is a slide with just text.<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+    This is a slide with just text. This is a slide with just text.<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;p&gt;</span>
+    There is more text just underneath.
+  <span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+
+<span class="nt">&lt;article</span> <span class="na">class=</span><span class="s">"fill"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;h3&gt;</span>
+    Image filling the slide (with optional header)
+  <span class="nt">&lt;/h3&gt;</span>
+  <span class="nt">&lt;p&gt;</span>
+    <span class="nt">&lt;img</span> <span class="na">alt=</span><span class="s">"syaraku"</span> <span class="na">src=</span><span class="s">"images/syaraku_eye.jpg"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;p&gt;</span>
+    There is more text just underneath.
+  <span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/article&gt;</span>
+</pre></div>
+
+<hr><h3>Uses</h3>
 
 <ul>
+<li><a href="https://github.com/ogom/python-mcider">python-mcider</a></li>
 <li><a href="https://github.com/waylan/Python-Markdown">Python-Markdown</a></li>
-<li><a href="http://code.google.com/p/html5slides/">A Google HTML5 slide template</a></li>
-</ul><h3>Licence</h3>
+<li><a href="http://code.google.com/p/io-2012-slides/">HTML5 slide template for Google I/O 2012</a></li>
+<li><a href="http://code.google.com/p/html5slides/">HTML5 slide template for Google I/O 2011</a></li>
+</ul><hr><h3>Licence</h3>
 
-<p><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a></p>
+<ul>
+<li><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a></li>
+</ul>
       </section>
       <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
 		
   </body>
 </html>
