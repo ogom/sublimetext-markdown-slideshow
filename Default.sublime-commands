@@ -3,5 +3,15 @@
         "caption": "Markdown Slideshow: Default theme",
         "command": "markdown_slideshow",
         "args": {"theme": "default"}
+    },
+    {
+        "caption": "Markdown Slideshow: I/O 2011 theme",
+        "command": "markdown_slideshow",
+        "args": {"theme": "io2011"}
+    },
+    {
+        "caption": "Markdown Slideshow: I/O 2012 theme",
+        "command": "markdown_slideshow",
+        "args": {"theme": "io2012"}
     }
 ]

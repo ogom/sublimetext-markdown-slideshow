@@ -10,6 +10,12 @@
   URL: http://code.google.com/p/html5slides/
 */
 
+/**
+ * ogom modifications
+ *   Change the css and js path.
+ *   Do not load the addFontStyle.
+ */
+
 var PERMANENT_URL_PREFIX = 'http://html5slides.googlecode.com/svn/trunk/';
 
 var SLIDE_CLASSES = ['far-past', 'past', 'current', 'next', 'far-next'];
@@ -535,7 +541,8 @@ function addPrettify() {
   
   var el = document.createElement('script');
   el.type = 'text/javascript';
-  el.src = PERMANENT_URL_PREFIX + 'prettify.js';
+  /* el.src = PERMANENT_URL_PREFIX + 'prettify.js'; */ /* ogom commented out */
+  el.src = 'js/prettify.js'; /* ogom added */
   el.onload = function() {
     prettyPrint();
   }
@@ -556,7 +563,8 @@ function addGeneralStyle() {
   var el = document.createElement('link');
   el.rel = 'stylesheet';
   el.type = 'text/css';
-  el.href = PERMANENT_URL_PREFIX + 'styles.css';
+  /* el.href = PERMANENT_URL_PREFIX + 'styles.css'; */ /* ogom commented out */
+  el.href = 'css/styles.css'; /* ogom added */
   document.body.appendChild(el);
   
   var el = document.createElement('meta');
@@ -586,12 +594,9 @@ function handleDomLoaded() {
 
   setupFrames();
 
-  /* ogom comment out
-  addFontStyle();
+  /* addFontStyle(); */ /* ogom commented out */
   addGeneralStyle();
   addPrettify();
-  */
-
   addEventListeners();
 
   updateSlides();
