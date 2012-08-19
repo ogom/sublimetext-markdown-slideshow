@@ -4,6 +4,11 @@ Markdown Slideshow
 A Sublime Text 2 plugin for slideshow in your web browser from markdown file.  
 Create a contents for markdown and then preview the slides in your browser.
 
+#### Examples of themes
+
+* [Google I/O 2012](http://ogom.github.com/sublimetext-markdown-slideshow/examples/io2012/slide.html)
+* [Google I/O 2011](http://ogom.github.com/sublimetext-markdown-slideshow/examples/io2011/slide.html)
+
 ---
 
 ### Installation

@@ -13,6 +13,7 @@
 /**
  * ogom modifications
  *   Change the images path.
+ *   Do not load the logo.
  */
 
 /* Framework */
@@ -101,11 +102,13 @@ body {
   padding: 40px 160px;
 }
 
+/*
 .slides.template-default > article:not(.nobackground):not(.biglogo) {
   background: url(../images/google-logo-small.png) 710px 625px no-repeat;  
   
   background-color: white;  
 } 
+*/
 
 .slides.template-io2011 > article:not(.nobackground):not(.biglogo) {
   background: url(../images/colorbar.png) 0 600px repeat-x,

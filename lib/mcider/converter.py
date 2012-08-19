@@ -102,6 +102,8 @@ class Slide():
             sections = page.split('\n\n', 2)
             slide = {}
             if not sections[0] in styles:
+                if len(sections) > 2:
+                    sections[1] += '\n\n' + sections[2]
                 sections.insert(0, 'none')
             slide['style'] = sections[0]
             if len(sections) > 1:
@@ -148,6 +150,8 @@ class Slide():
             sections = page.split('\n\n', 1)
             slide = {}
             if not sections[0] in styles:
+                if len(sections) > 1:
+                    sections[0] += '\n\n' + sections[1]
                 sections.insert(0, 'none')
             slide['style'] = sections[0]
             if len(sections) > 1:
