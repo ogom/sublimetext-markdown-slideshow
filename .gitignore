@@ -1,5 +1,4 @@
-# Python Compiled File
-*.pyc
+*.py[co]
 
-# For MacOS:
+# Mac
 .DS_Store

@@ -1,7 +1,7 @@
 Markdown Slideshow
 ==================
 
-A Sublime Text 2 plugin for slideshow in your web browser from markdown file.
+A Sublime Text 2 plugin for slideshow in your web browser from markdown file.  
 Create a contents for markdown and then preview the slides in your browser.
 
 ---
@@ -49,7 +49,7 @@ Let's add key bindings - user.
 ### How to use
 #### Output Hints
 
-Separates the slide is `---` or `___` or `***` be returned to hr tab at markdown.
+Separates the slide is `---` or `___` or `***` be returned to hr tab at markdown.  
 io2012 or io2011 of the theme to change the class of article in the horizon. 
 
      horizon |  article class
@@ -62,7 +62,7 @@ io2012 or io2011 of the theme to change the class of article in the horizon.
 
 ### Examples
 
-#### theme of io2012
+#### Theme of io2012
 
 Markdown the original
 
@@ -176,7 +176,7 @@ The converted html
 ```
 
 
-#### theme of io2011
+#### Theme of io2011
 
 Markdown the original
 
