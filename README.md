@@ -59,7 +59,7 @@ Let's add key bindings - user.
 
 * themes        : Path of the custom themes
 * theme         : Theme of the slide. (default, io2012, io2011, ...) 
-* extensions    : Provided to expand the base syntax. (extra, fenced_code, tables, ...)
+* extensions    : Provided to expand the base syntax. (extra, fenced_code, tables, ...) [See also](http://freewisdom.org/projects/python-markdown/Available_Extensions)
 * browser       : View in Web Browser. (boolean, default True)
 * clean         : Theme was to clean the output. (boolean, default False)
 * output_file   : File to output slide.
