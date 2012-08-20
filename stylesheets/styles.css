@@ -131,6 +131,18 @@ dl p {
   font-style: italic;
 }
 
+section ul li {
+  list-style: outside;
+  padding-left: 0px;
+  margin-left: 40px;
+}
+
+section ol li {
+  list-style: decimal outside;
+  padding-left: 0px;
+  margin-left: 40px;
+}
+
 hr {
   border:0;
   background:#ccc;
