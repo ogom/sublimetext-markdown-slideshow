@@ -23,7 +23,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    '--extensions', '-e', metavar='EXTENSION', nargs='*',
+    '--extensions', '-x', metavar='EXTENSION', nargs='*',
     help='''
       Provided to expand the base syntax.
       (extra, fenced_code, tables, ...)
@@ -38,6 +38,11 @@ parser.add_argument(
 parser.add_argument(
     '--clean', '-c', action='store_true', default=False,
     help='Theme was to clean the output.'
+)
+
+parser.add_argument(
+    '--presenter', action='store_true', default=False,
+    help='Presenter mode.'
 )
 
 parser.add_argument(

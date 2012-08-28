@@ -38,6 +38,25 @@ Let's add key bindings - user.
       }
     ]
 
+### Google I/O 2012 theme
+
+    [
+      {
+        "keys": ["alt+s"], "command": "markdown_slideshow",
+        "args": {"theme": "io2012"}
+      }
+    ]
+
+### Google I/O 2011 theme
+
+    [
+      {
+        "keys": ["alt+s"], "command": "markdown_slideshow",
+        "args": {"theme": "io2011"}
+      }
+    ]
+
+
 ### All options Key Bindings
 
     [
@@ -46,9 +65,10 @@ Let's add key bindings - user.
         "args":
         {
           "themes": "/opt/mcider/themes",
-          "theme": "io2011",
+          "theme": "io2012",
           "extensions": ["fenced_code", "tables"],
           "browser": true,
+          "presenter": false,
           "clean": false,
           "output_file": "/opt/mcider/tmp/slide.html"
         }
@@ -60,8 +80,9 @@ Let's add key bindings - user.
 * themes        : Path of the custom themes
 * theme         : Theme of the slide. (default, io2012, io2011, ...) 
 * extensions    : Provided to expand the base syntax. (extra, fenced_code, tables, ...) [See also](http://freewisdom.org/projects/python-markdown/Available_Extensions)
-* browser       : View in Web Browser. (boolean, default True)
-* clean         : Theme was to clean the output. (boolean, default False)
+* browser       : View in Web Browser. (boolean, default true)
+* presenter     : Presenter mode. Only theme `io2012`. (boolean, default false)
+* clean         : Theme was to clean the output. (boolean, default false)
 * output_file   : File to output slide.
 
 

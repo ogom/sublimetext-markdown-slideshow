@@ -40,7 +40,11 @@ def main():
         html = slide.maker(output_path)
         util.fs_writer(output_file, html)
         if args.browser:
-            webbrowser.open_new_tab('file://' + output_file)
+            url = 'file://' + output_file
+            if slide.options['theme'] == 'io2012':
+                url += '?presentme='
+                url += 'true' if args.presenter else 'false'
+            webbrowser.open_new_tab(url)
     except KeyError as e:
         print "KeyError: %s" % e
     else:

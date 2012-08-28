@@ -125,6 +125,11 @@ class Slide():
                 html += md.convert(slide['article']) + '\n'
                 html += '</article>\n'
             html += '</slide>\n\n'
+
+        # from comment out to presener note
+        html = html.replace('\n<!--\n', '\n<aside class="note">\n')
+        html = html.replace('\n-->\n', '\n</aside>\n')
+
         return html
 
     def _get_slide_io2011(self, contents=None, extensions=[]):

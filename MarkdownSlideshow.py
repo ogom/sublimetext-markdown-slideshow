@@ -14,7 +14,7 @@ import mcider.util as util
 class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
     """ slideshow in your web browser from file contents """
 
-    def run(self, edit, themes=None, theme='default', extensions=[], clean=False, output_file=None, browser=True, save=None, path=None):
+    def run(self, edit, themes=None, theme='default', extensions=[], clean=False, output_file=None, browser=True, presenter=False, save=None, path=None):
         """ TODO: save and path of the variable to be removed. """
 
         # slide options
@@ -48,5 +48,8 @@ class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
         util.fs_writer(output_file, html)
 
         if browser:
-            webbrowser.open_new_tab('file://' + output_file)
-        
+            url = 'file://' + output_file
+            if slide.options['theme'] == 'io2012':
+                url += '?presentme='
+                url += 'true' if presenter else 'false'
+            webbrowser.open_new_tab(url)
