@@ -1,0 +1,5 @@
+---
+- label: Changelog
+  path: "/changelog"
+- label: Documentation
+  path: "/docs"

@@ -1,0 +1,34 @@
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <a href="https://github.com/ogom/sublimetext-markdown-slideshow">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"
+      src="{{ site.baseurl }}/assets/img/ribbons/forkme_right_red.png" alt="Fork me on GitHub"</a>
+    <div class="navbar-header">
+      <a href="{{ site.baseurl }}/" class="navbar-brand">{{ site.name }}</a>
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar-main">
+      <ul class="nav navbar-nav">
+        {% for nav in site.data.navbar %}
+          {% if nav.dropdown %}<li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ nav.label }}
+             <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                {% for page in site.pages %}<li>
+                  {% if page.url contains nav.path %}
+                    <a tabindex="-1" href="{{ site.baseurl }}{{ page.url }}">{{ page.title }}</a>
+                  {% endif %}
+                {% endfor %}</li>
+              </ul>
+          {% else %}<li>
+            <a href="{{ site.baseurl }}{{ nav.path }}">{{ nav.label }}</a>
+          {% endif %}
+        {% endfor %}</li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+---
+markdown: redcarpet
+redcarpet:
+  extensions:
+  - tables
+  - with_toc_data
+pygments: true
+baseurl: "/sublimetext-markdown-slideshow"
+encoding: UTF-8
+exclude:
+- README.md
+- vendor
+- tmp
+name: Sublime Text Markdown Slideshow
+copyright: 2014, ogom
+theme: slate

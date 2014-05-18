@@ -1,0 +1,11 @@
+---
+layout: default
+title: Changelog
+---
+
+{% for post in site.posts %}
+<strong><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>&nbsp;&nbsp;</strong>
+<smale class="text-muted">(&nbsp;{{ post.date | date: "%B %-d, %Y" }}&nbsp;)</smale>
+{{ post.content }}
+<hr>
+{% endfor %}

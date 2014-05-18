@@ -1,0 +1,11 @@
+<%# coding: UTF-8 -%>
+---
+layout: default
+title: <%= pathname.basename(".*").to_s.capitalize %>
+---
+
+| Method  | Resource | Description |
+|:-------:|:---------|:------------|
+<% documents.each do |document| -%>
+| <%= document.method %> | [<%= document.resource %>](#toc_0) | <%= document.description %> |
+<% end -%>
