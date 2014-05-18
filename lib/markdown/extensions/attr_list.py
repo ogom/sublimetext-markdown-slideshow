@@ -18,9 +18,12 @@ Dependencies:
 
 """
 
-import markdown
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from . import Extension
+from ..treeprocessors import Treeprocessor
+from ..util import isBlockLevel
 import re
-from markdown.util import isBlockLevel
 
 try:
     Scanner = re.Scanner
@@ -41,9 +44,9 @@ def _handle_key_value(s, t):
 
 def _handle_word(s, t):
     if t.startswith('.'):
-        return u'.', t[1:]
+        return '.', t[1:]
     if t.startswith('#'):
-        return u'id', t[1:]
+        return 'id', t[1:]
     return t, t
 
 _scanner = Scanner([
@@ -61,23 +64,52 @@ def get_attrs(str):
 def isheader(elem):
     return elem.tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 
-class AttrListTreeprocessor(markdown.treeprocessors.Treeprocessor):
+class AttrListTreeprocessor(Treeprocessor):
     
     BASE_RE = r'\{\:?([^\}]*)\}'
-    HEADER_RE = re.compile(r'[ ]*%s[ ]*$' % BASE_RE)
+    HEADER_RE = re.compile(r'[ ]+%s[ ]*$' % BASE_RE)
     BLOCK_RE = re.compile(r'\n[ ]*%s[ ]*$' % BASE_RE)
     INLINE_RE = re.compile(r'^%s' % BASE_RE)
+    NAME_RE = re.compile(r'[^A-Z_a-z\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02ff\u0370-\u037d'
+                         r'\u037f-\u1fff\u200c-\u200d\u2070-\u218f\u2c00-\u2fef'
+                         r'\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd'
+                         r'\:\-\.0-9\u00b7\u0300-\u036f\u203f-\u2040]+')
 
     def run(self, doc):
         for elem in doc.getiterator():
-            #import pdb; pdb.set_trace()
             if isBlockLevel(elem.tag):
                 # Block level: check for attrs on last line of text
                 RE = self.BLOCK_RE
-                if isheader(elem):
-                    # header: check for attrs at end of line
+                if isheader(elem) or elem.tag == 'dt':
+                    # header or def-term: check for attrs at end of line
                     RE = self.HEADER_RE
-                if len(elem) and elem[-1].tail:
+                if len(elem) and elem.tag == 'li':
+                    # special case list items. children may include a ul or ol.
+                    pos = None
+                    # find the ul or ol position
+                    for i, child in enumerate(elem):
+                        if child.tag in ['ul', 'ol']:
+                            pos = i
+                            break
+                    if pos is None and elem[-1].tail:
+                        # use tail of last child. no ul or ol.
+                        m = RE.search(elem[-1].tail)
+                        if m:
+                            self.assign_attrs(elem, m.group(1))
+                            elem[-1].tail = elem[-1].tail[:m.start()]
+                    elif pos is not None and pos > 0 and elem[pos-1].tail:
+                        # use tail of last child before ul or ol
+                        m = RE.search(elem[pos-1].tail)
+                        if m:
+                            self.assign_attrs(elem, m.group(1))
+                            elem[pos-1].tail = elem[pos-1].tail[:m.start()]
+                    elif elem.text:
+                        # use text. ul is first child.
+                        m = RE.search(elem.text)
+                        if m:
+                            self.assign_attrs(elem, m.group(1))
+                            elem.text = elem.text[:m.start()]
+                elif len(elem) and elem[-1].tail:
                     # has children. Get from tail of last child
                     m = RE.search(elem[-1].tail)
                     if m:
@@ -89,6 +121,8 @@ class AttrListTreeprocessor(markdown.treeprocessors.Treeprocessor):
                 elif elem.text:
                     # no children. Get from text.
                     m = RE.search(elem.text)
+                    if not m and elem.tag == 'td':
+                        m = re.search(self.BASE_RE, elem.text)
                     if m:
                         self.assign_attrs(elem, m.group(1))
                         elem.text = elem.text[:m.start()]
@@ -114,18 +148,20 @@ class AttrListTreeprocessor(markdown.treeprocessors.Treeprocessor):
                 else:
                     elem.set('class', v)
             else:
-                # assing attr k with v
-                elem.set(k, v)
+                # assign attr k with v
+                elem.set(self.sanitize_name(k), v)
+
+    def sanitize_name(self, name):
+        """
+        Sanitize name as 'an XML Name, minus the ":"'.
+        See http://www.w3.org/TR/REC-xml-names/#NT-NCName
+        """
+        return self.NAME_RE.sub('_', name)
 
 
-class AttrListExtension(markdown.extensions.Extension):
+class AttrListExtension(Extension):
     def extendMarkdown(self, md, md_globals):
-        if 'headerid' in md.treeprocessors.keys():
-            # insert after 'headerid' treeprocessor
-            md.treeprocessors.add('attr_list', AttrListTreeprocessor(md), '>headerid')
-        else:
-            # insert after 'inline' treeprocessor
-            md.treeprocessors.add('attr_list', AttrListTreeprocessor(md), '>inline')
+        md.treeprocessors.add('attr_list', AttrListTreeprocessor(md), '>prettify')
 
 
 def makeExtension(configs={}):

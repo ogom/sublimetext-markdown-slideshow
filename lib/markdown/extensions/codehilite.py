@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 """
 CodeHilite Extension for Python-Markdown
 ========================================
@@ -20,7 +18,11 @@ Dependencies:
 
 """
 
-import markdown
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from . import Extension
+from ..treeprocessors import Treeprocessor
+import warnings
 try:
     from pygments import highlight
     from pygments.lexers import get_lexer_by_name, guess_lexer, TextLexer
@@ -29,8 +31,24 @@ try:
 except ImportError:
     pygments = False
 
+
+def parse_hl_lines(expr):
+    """Support our syntax for emphasizing certain lines of code.
+
+    expr should be like '1 2' to emphasize lines 1 and 2 of a code block.
+    Returns a list of ints, the line numbers to emphasize.
+    """
+    if not expr:
+        return []
+
+    try:
+        return list(map(int, expr.split()))
+    except ValueError:
+        return []
+
+
 # ------------------ The Main CodeHilite Class ----------------------
-class CodeHilite:
+class CodeHilite(object):
     """
     Determine language of source code, and pass it into the pygments hilighter.
 
@@ -40,11 +58,14 @@ class CodeHilite:
 
     * src: Source string or any object with a .readline attribute.
 
-    * linenos: (Boolen) Turn line numbering 'on' or 'off' (off by default).
+    * linenums: (Boolean) Set line numbering to 'on' (True), 'off' (False) or 'auto'(None). 
+    Set to 'auto' by default.
 
-    * guess_lang: (Boolen) Turn language auto-detection 'on' or 'off' (on by default).
+    * guess_lang: (Boolean) Turn language auto-detection 'on' or 'off' (on by default).
 
     * css_class: Set class name of wrapper div ('codehilite' by default).
+
+    * hl_lines: (List of integers) Lines to emphasize, 1-indexed.
 
     Low Level Usage:
         >>> code = CodeHilite()
@@ -54,17 +75,18 @@ class CodeHilite:
 
     """
 
-    def __init__(self, src=None, linenos=False, guess_lang=True,
+    def __init__(self, src=None, linenums=None, guess_lang=True,
                 css_class="codehilite", lang=None, style='default',
-                noclasses=False, tab_length=4):
+                noclasses=False, tab_length=4, hl_lines=None):
         self.src = src
         self.lang = lang
-        self.linenos = linenos
+        self.linenums = linenums
         self.guess_lang = guess_lang
         self.css_class = css_class
         self.style = style
         self.noclasses = noclasses
         self.tab_length = tab_length
+        self.hl_lines = hl_lines or []
 
     def hilite(self):
         """
@@ -80,7 +102,7 @@ class CodeHilite:
         self.src = self.src.strip('\n')
 
         if self.lang is None:
-            self._getLang()
+            self._parseHeader()
 
         if pygments:
             try:
@@ -93,10 +115,11 @@ class CodeHilite:
                         lexer = TextLexer()
                 except ValueError:
                     lexer = TextLexer()
-            formatter = HtmlFormatter(linenos=self.linenos,
+            formatter = HtmlFormatter(linenos=self.linenums,
                                       cssclass=self.css_class,
                                       style=self.style,
-                                      noclasses=self.noclasses)
+                                      noclasses=self.noclasses,
+                                      hl_lines=self.hl_lines)
             return highlight(self.src, lexer, formatter)
         else:
             # just escape and build markup usable by JS highlighting libs
@@ -107,7 +130,7 @@ class CodeHilite:
             classes = []
             if self.lang:
                 classes.append('language-%s' % self.lang)
-            if self.linenos:
+            if self.linenums:
                 classes.append('linenums')
             class_str = ''
             if classes:
@@ -115,7 +138,7 @@ class CodeHilite:
             return '<pre class="%s"><code%s>%s</code></pre>\n'% \
                         (self.css_class, class_str, txt)
 
-    def _getLang(self):
+    def _parseHeader(self):
         """
         Determines language of a code block from shebang line and whether said
         line should be removed or left in place. If the sheband line contains a
@@ -128,6 +151,9 @@ class CodeHilite:
         (e.i.: :::python), line numbering is left in the current state - off
         by default.
 
+        Also parses optional list of highlight lines, like:
+
+            :::python hl_lines="1 3"
         """
 
         import re
@@ -138,9 +164,12 @@ class CodeHilite:
         fl = lines.pop(0)
 
         c = re.compile(r'''
-            (?:(?:^::+)|(?P<shebang>^[#]!))	# Shebang or 2 or more colons.
+            (?:(?:^::+)|(?P<shebang>^[#]!)) # Shebang or 2 or more colons
             (?P<path>(?:/\w+)*[/ ])?        # Zero or 1 path
             (?P<lang>[\w+-]*)               # The language
+            \s*                             # Arbitrary whitespace
+            # Optional highlight lines, single- or double-quote-delimited
+            (hl_lines=(?P<quot>"|')(?P<hl_lines>.*?)(?P=quot))?
             ''',  re.VERBOSE)
         # search first line for shebang
         m = c.search(fl)
@@ -153,9 +182,11 @@ class CodeHilite:
             if m.group('path'):
                 # path exists - restore first line
                 lines.insert(0, fl)
-            if m.group('shebang'):
-                # shebang exists - use line numbers
-                self.linenos = True
+            if self.linenums is None and m.group('shebang'):
+                # Overridable and Shebang exists - use line numbers
+                self.linenums = True
+
+            self.hl_lines = parse_hl_lines(m.group('hl_lines'))
         else:
             # No match
             lines.insert(0, fl)
@@ -165,7 +196,7 @@ class CodeHilite:
 
 
 # ------------------ The Markdown Extension -------------------------------
-class HiliteTreeprocessor(markdown.treeprocessors.Treeprocessor):
+class HiliteTreeprocessor(Treeprocessor):
     """ Hilight source code in code blocks. """
 
     def run(self, root):
@@ -175,7 +206,7 @@ class HiliteTreeprocessor(markdown.treeprocessors.Treeprocessor):
             children = block.getchildren()
             if len(children) == 1 and children[0].tag == 'code':
                 code = CodeHilite(children[0].text,
-                            linenos=self.config['force_linenos'],
+                            linenums=self.config['linenums'],
                             guess_lang=self.config['guess_lang'],
                             css_class=self.config['css_class'],
                             style=self.config['pygments_style'],
@@ -191,13 +222,14 @@ class HiliteTreeprocessor(markdown.treeprocessors.Treeprocessor):
                 block.text = placeholder
 
 
-class CodeHiliteExtension(markdown.Extension):
+class CodeHiliteExtension(Extension):
     """ Add source code hilighting to markdown codeblocks. """
 
     def __init__(self, configs):
         # define default configs
         self.config = {
-            'force_linenos' : [False, "Force line numbers - Default: False"],
+            'linenums': [None, "Use lines numbers. True=yes, False=no, None=auto"],
+            'force_linenos' : [False, "Depreciated! Use 'linenums' instead. Force line numbers - Default: False"],
             'guess_lang' : [True, "Automatic language detection - Default: True"],
             'css_class' : ["codehilite",
                            "Set class name for wrapper <div> - Default: codehilite"],
@@ -210,6 +242,16 @@ class CodeHiliteExtension(markdown.Extension):
             # convert strings to booleans
             if value == 'True': value = True
             if value == 'False': value = False
+            if value == 'None': value = None
+
+            if key == 'force_linenos':
+                warnings.warn('The "force_linenos" config setting'
+                    ' to the CodeHilite extension is deprecrecated.'
+                    ' Use "linenums" instead.', DeprecationWarning)
+                if value:
+                    # Carry 'force_linenos' over to new 'linenos'.
+                    self.setConfig('linenums', True)
+
             self.setConfig(key, value)
 
     def extendMarkdown(self, md, md_globals):

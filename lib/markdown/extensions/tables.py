@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Tables Extension for Python-Markdown
 ====================================
@@ -14,11 +13,14 @@ A simple example:
 
 Copyright 2009 - [Waylan Limberg](http://achinghead.com)
 """
-import markdown
-from markdown.util import etree
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from . import Extension
+from ..blockprocessors import BlockProcessor
+from ..util import etree
 
-class TableProcessor(markdown.blockprocessors.BlockProcessor):
+class TableProcessor(BlockProcessor):
     """ Process Tables. """
 
     def test(self, parent, block):
@@ -84,7 +86,7 @@ class TableProcessor(markdown.blockprocessors.BlockProcessor):
         return row.split('|')
 
 
-class TableExtension(markdown.Extension):
+class TableExtension(Extension):
     """ Add tables to Markdown. """
 
     def extendMarkdown(self, md, md_globals):

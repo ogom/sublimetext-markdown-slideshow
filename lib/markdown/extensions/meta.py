@@ -1,5 +1,3 @@
-#!usr/bin/python
-
 """
 Meta Data Extension for Python-Markdown
 =======================================
@@ -40,15 +38,18 @@ Contact: markdown@freewisdom.org
 License: BSD (see ../LICENSE.md for details)
 
 """
-import re
 
-import markdown
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from . import Extension
+from ..preprocessors import Preprocessor
+import re
 
 # Global Vars
 META_RE = re.compile(r'^[ ]{0,3}(?P<key>[A-Za-z0-9_-]+):\s*(?P<value>.*)')
 META_MORE_RE = re.compile(r'^[ ]{4,}(?P<value>.*)')
 
-class MetaExtension (markdown.Extension):
+class MetaExtension (Extension):
     """ Meta-Data extension for Python-Markdown. """
 
     def extendMarkdown(self, md, md_globals):
@@ -57,14 +58,14 @@ class MetaExtension (markdown.Extension):
         md.preprocessors.add("meta", MetaPreprocessor(md), "_begin")
 
 
-class MetaPreprocessor(markdown.preprocessors.Preprocessor):
+class MetaPreprocessor(Preprocessor):
     """ Get Meta-Data. """
 
     def run(self, lines):
         """ Parse Meta-Data and store in Markdown.Meta. """
         meta = {}
         key = None
-        while 1:
+        while lines:
             line = lines.pop(0)
             if line.strip() == '':
                 break # blank line - done
@@ -90,7 +91,3 @@ class MetaPreprocessor(markdown.preprocessors.Preprocessor):
 
 def makeExtension(configs={}):
     return MetaExtension(configs=configs)
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()

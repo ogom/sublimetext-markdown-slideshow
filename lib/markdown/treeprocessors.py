@@ -1,7 +1,8 @@
-import re
-import inlinepatterns
-import util
-import odict
+from __future__ import unicode_literals
+from __future__ import absolute_import
+from . import util
+from . import odict
+from . import inlinepatterns
 
 
 def build_treeprocessors(md_instance, **kwargs):
@@ -15,17 +16,11 @@ def build_treeprocessors(md_instance, **kwargs):
 def isString(s):
     """ Check if it's string """
     if not isinstance(s, util.AtomicString):
-        return isinstance(s, basestring)
+        return isinstance(s, util.string_type)
     return False
 
 
-class Processor:
-    def __init__(self, markdown_instance=None):
-        if markdown_instance:
-            self.markdown = markdown_instance
-
-
-class Treeprocessor(Processor):
+class Treeprocessor(util.Processor):
     """
     Treeprocessors are run on the ElementTree object before serialization.
 
@@ -136,7 +131,7 @@ class InlineProcessor(Treeprocessor):
         childResult = self.__processPlaceholders(text, subnode)
 
         if not isText and node is not subnode:
-            pos = node.getchildren().index(subnode)
+            pos = list(node).index(subnode)
             node.remove(subnode)
         else:
             pos = 0
@@ -184,7 +179,7 @@ class InlineProcessor(Treeprocessor):
                         linkText(text)
 
                     if not isString(node): # it's Element
-                        for child in [node] + node.getchildren():
+                        for child in [node] + list(node):
                             if child.tail:
                                 if child.tail.strip():
                                     self.__processElementText(node, child,False)
@@ -242,7 +237,7 @@ class InlineProcessor(Treeprocessor):
         if not isString(node):
             if not isinstance(node.text, util.AtomicString):
                 # We need to process current node too
-                for child in [node] + node.getchildren():
+                for child in [node] + list(node):
                     if not isString(node):
                         if child.text: 
                             child.text = self.__handleInline(child.text,
@@ -281,7 +276,7 @@ class InlineProcessor(Treeprocessor):
         while stack:
             currElement = stack.pop()
             insertQueue = []
-            for child in currElement.getchildren():
+            for child in currElement:
                 if child.text and not isinstance(child.text, util.AtomicString):
                     text = child.text
                     child.text = None
@@ -297,16 +292,16 @@ class InlineProcessor(Treeprocessor):
                         child.tail = dumby.text
                     else:
                         child.tail = None
-                    pos = currElement.getchildren().index(child) + 1
+                    pos = list(currElement).index(child) + 1
                     tailResult.reverse()
                     for newChild in tailResult:
                         currElement.insert(pos, newChild)
-                if child.getchildren():
+                if len(child):
                     stack.append(child)
 
             for element, lst in insertQueue:
                 if self.markdown.enable_attributes:
-                    if element.text:
+                    if element.text and isString(element.text):
                         element.text = \
                             inlinepatterns.handleAttributes(element.text, 
                                                                     element)
@@ -314,11 +309,11 @@ class InlineProcessor(Treeprocessor):
                 for newChild in lst:
                     if self.markdown.enable_attributes:
                         # Processing attributes
-                        if newChild.tail:
+                        if newChild.tail and isString(newChild.tail):
                             newChild.tail = \
                                 inlinepatterns.handleAttributes(newChild.tail,
                                                                     element)
-                        if newChild.text:
+                        if newChild.text and isString(newChild.text):
                             newChild.text = \
                                 inlinepatterns.handleAttributes(newChild.text,
                                                                     newChild)
@@ -358,3 +353,8 @@ class PrettifyTreeprocessor(Treeprocessor):
                 br.tail = '\n'
             else:
                 br.tail = '\n%s' % br.tail
+        # Clean up extra empty lines at end of code blocks.
+        pres = root.getiterator('pre')
+        for pre in pres:
+            if len(pre) and pre[0].tag == 'code':
+                pre[0].text = pre[0].text.rstrip() + '\n'

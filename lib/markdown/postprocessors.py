@@ -8,9 +8,12 @@ processing.
 
 """
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from . import util
+from . import odict
 import re
-import util
-import odict
+
 
 def build_postprocessors(md_instance, **kwargs):
     """ Build the default postprocessors for Markdown. """
@@ -95,7 +98,7 @@ class UnescapePostprocessor(Postprocessor):
     RE = re.compile('%s(\d+)%s' % (util.STX, util.ETX))
 
     def unescape(self, m):
-        return unichr(int(m.group(1)))
+        return util.int2str(int(m.group(1)))
 
     def run(self, text):
         return self.RE.sub(self.unescape, text)

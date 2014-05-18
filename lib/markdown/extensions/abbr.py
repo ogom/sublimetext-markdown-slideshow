@@ -23,14 +23,18 @@ Copyright 2007-2008
 
 '''
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from . import Extension
+from ..preprocessors import Preprocessor
+from ..inlinepatterns import Pattern
+from ..util import etree, AtomicString
 import re
-import markdown
-from markdown.util import etree
 
 # Global Vars
 ABBR_REF_RE = re.compile(r'[*]\[(?P<abbr>[^\]]*)\][ ]?:\s*(?P<title>.*)')
 
-class AbbrExtension(markdown.Extension):
+class AbbrExtension(Extension):
     """ Abbreviation Extension for Python-Markdown. """
 
     def extendMarkdown(self, md, md_globals):
@@ -38,7 +42,7 @@ class AbbrExtension(markdown.Extension):
         md.preprocessors.add('abbr', AbbrPreprocessor(md), '<reference')
         
            
-class AbbrPreprocessor(markdown.preprocessors.Preprocessor):
+class AbbrPreprocessor(Preprocessor):
     """ Abbreviation Preprocessor - parse text for abbr references. """
 
     def run(self, lines):
@@ -75,22 +79,18 @@ class AbbrPreprocessor(markdown.preprocessors.Preprocessor):
         return r'(?P<abbr>\b%s\b)' % (r''.join(chars))
 
 
-class AbbrPattern(markdown.inlinepatterns.Pattern):
+class AbbrPattern(Pattern):
     """ Abbreviation inline pattern. """
 
     def __init__(self, pattern, title):
-        markdown.inlinepatterns.Pattern.__init__(self, pattern)
+        super(AbbrPattern, self).__init__(pattern)
         self.title = title
 
     def handleMatch(self, m):
         abbr = etree.Element('abbr')
-        abbr.text = m.group('abbr')
+        abbr.text = AtomicString(m.group('abbr'))
         abbr.set('title', self.title)
         return abbr
 
 def makeExtension(configs=None):
     return AbbrExtension(configs=configs)
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()

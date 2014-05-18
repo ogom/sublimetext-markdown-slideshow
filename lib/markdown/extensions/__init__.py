@@ -3,7 +3,9 @@ Extensions
 -----------------------------------------------------------------------------
 """
 
-class Extension:
+from __future__ import unicode_literals
+
+class Extension(object):
     """ Base class for extensions to subclass. """
     def __init__(self, configs = {}):
         """Create an instance of an Extention.
@@ -46,6 +48,6 @@ class Extension:
         * md_globals: Global variables in the markdown module namespace.
 
         """
-        raise NotImplementedError, 'Extension "%s.%s" must define an "extendMarkdown"' \
-            'method.' % (self.__class__.__module__, self.__class__.__name__)
+        raise NotImplementedError('Extension "%s.%s" must define an "extendMarkdown"' \
+            'method.' % (self.__class__.__module__, self.__class__.__name__))
 

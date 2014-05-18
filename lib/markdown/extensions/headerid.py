@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 """
 HeaderID Extension for Python-Markdown
 ======================================
@@ -76,10 +74,12 @@ Dependencies:
 
 """
 
-import markdown
-from markdown.util import etree
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from . import Extension
+from ..treeprocessors import Treeprocessor
+from ..util import HTML_PLACEHOLDER_RE, parseBoolValue
 import re
-from string import ascii_lowercase, digits, punctuation
 import logging
 import unicodedata
 
@@ -103,7 +103,7 @@ def unique(id, ids):
             id = '%s_%d'% (m.group(1), int(m.group(2))+1)
         else:
             id = '%s_%d'% (id, 1)
-    ids.append(id)
+    ids.add(id)
     return id
 
 
@@ -122,7 +122,23 @@ def itertext(elem):
             yield e.tail
 
 
-class HeaderIdTreeprocessor(markdown.treeprocessors.Treeprocessor):
+def stashedHTML2text(text, md):
+    """ Extract raw HTML, reduce to plain text and swap with placeholder. """
+    def _html_sub(m):
+        """ Substitute raw html with plain text. """
+        try:
+    	    raw, safe = md.htmlStash.rawHtmlBlocks[int(m.group(1))]
+        except (IndexError, TypeError):
+            return m.group(0)
+        if md.safeMode and not safe:
+            return ''
+        # Strip out tags and entities - leaveing text
+        return re.sub(r'(<[^>]+>)|(&[\#a-zA-Z0-9]+;)', '', raw)
+
+    return HTML_PLACEHOLDER_RE.sub(_html_sub, text)
+
+
+class HeaderIdTreeprocessor(Treeprocessor):
     """ Assign IDs to headers. """
 
     IDs = set()
@@ -135,9 +151,10 @@ class HeaderIdTreeprocessor(markdown.treeprocessors.Treeprocessor):
             if elem.tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
                 if force_id:
                     if "id" in elem.attrib:
-                        id = elem.id
+                        id = elem.get('id')
                     else:
-                        id = slugify(''.join(itertext(elem)), sep)
+                        id = stashedHTML2text(''.join(itertext(elem)), self.md)
+                        id = slugify(id, sep)
                     elem.set('id', unique(id, self.IDs))
                 if start_level:
                     level = int(elem.tag[-1]) + start_level
@@ -149,25 +166,16 @@ class HeaderIdTreeprocessor(markdown.treeprocessors.Treeprocessor):
     def _get_meta(self):
         """ Return meta data suported by this ext as a tuple """
         level = int(self.config['level']) - 1
-        force = self._str2bool(self.config['forceid'])
+        force = parseBoolValue(self.config['forceid'])
         if hasattr(self.md, 'Meta'):
-            if self.md.Meta.has_key('header_level'):
+            if 'header_level' in self.md.Meta:
                 level = int(self.md.Meta['header_level'][0]) - 1
-            if self.md.Meta.has_key('header_forceid'): 
-                force = self._str2bool(self.md.Meta['header_forceid'][0])
+            if 'header_forceid' in self.md.Meta: 
+                force = parseBoolValue(self.md.Meta['header_forceid'][0])
         return level, force
 
-    def _str2bool(self, s, default=False):
-        """ Convert a string to a booleen value. """
-        s = str(s)
-        if s.lower() in ['0', 'f', 'false', 'off', 'no', 'n']:
-            return False
-        elif s.lower() in ['1', 't', 'true', 'on', 'yes', 'y']:
-            return True
-        return default
 
-
-class HeaderIdExtension (markdown.Extension):
+class HeaderIdExtension(Extension):
     def __init__(self, configs):
         # set defaults
         self.config = {
@@ -185,17 +193,16 @@ class HeaderIdExtension (markdown.Extension):
         self.processor = HeaderIdTreeprocessor()
         self.processor.md = md
         self.processor.config = self.getConfigs()
-        # Replace existing hasheader in place.
-        md.treeprocessors.add('headerid', self.processor, '>inline')
+        if 'attr_list' in md.treeprocessors.keys():
+            # insert after attr_list treeprocessor
+            md.treeprocessors.add('headerid', self.processor, '>attr_list')
+        else:
+            # insert after 'prettify' treeprocessor.
+            md.treeprocessors.add('headerid', self.processor, '>prettify')
 
     def reset(self):
-        self.processor.IDs = []
+        self.processor.IDs = set()
 
 
 def makeExtension(configs=None):
     return HeaderIdExtension(configs=configs)
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
-

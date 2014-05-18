@@ -22,7 +22,7 @@ Limberg](http://achinghead.com/) and [Artem Yunusov](http://blog.splyer.com).
 
 Contact: markdown@freewisdom.org
 
-Copyright 2007-2012 The Python Markdown Project (v. 1.7 and later)
+Copyright 2007-2013 The Python Markdown Project (v. 1.7 and later)
 Copyright 200? Django Software Foundation (OrderedDict implementation)
 Copyright 2004, 2005, 2006 Yuri Takhteyev (v. 0.2-1.6b)
 Copyright 2004 Manfred Stienstra (the original version)
@@ -30,28 +30,27 @@ Copyright 2004 Manfred Stienstra (the original version)
 License: BSD (see LICENSE for details).
 """
 
-version = "2.2.0"
-version_info = (2,2,0, "final")
-
-import re
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from .__version__ import version, version_info
 import codecs
 import sys
 import logging
-import util
-from preprocessors import build_preprocessors
-from blockprocessors import build_block_parser
-from treeprocessors import build_treeprocessors
-from inlinepatterns import build_inlinepatterns
-from postprocessors import build_postprocessors
-from extensions import Extension
-from serializers import to_html_string, to_xhtml_string
+from . import util
+from .preprocessors import build_preprocessors
+from .blockprocessors import build_block_parser
+from .treeprocessors import build_treeprocessors
+from .inlinepatterns import build_inlinepatterns
+from .postprocessors import build_postprocessors
+from .extensions import Extension
+from .serializers import to_html_string, to_xhtml_string
 
 __all__ = ['Markdown', 'markdown', 'markdownFromFile']
 
 logger = logging.getLogger('MARKDOWN')
 
 
-class Markdown:
+class Markdown(object):
     """Convert Markdown to HTML."""
 
     doc_tag = "div"     # Element used to wrap document - later removed
@@ -101,16 +100,16 @@ class Markdown:
         * html_replacement_text: Text used when safe_mode is set to "replace".
         * tab_length: Length of tabs in the source. Default: 4
         * enable_attributes: Enable the conversion of attributes. Default: True
-        * smart_emphasis: Treat `_connected_words_` intelegently Default: True
+        * smart_emphasis: Treat `_connected_words_` intelligently Default: True
         * lazy_ol: Ignore number of first item of ordered lists. Default: True
 
         """
 
-        # For backward compatability, loop through old positional args
+        # For backward compatibility, loop through old positional args
         pos = ['extensions', 'extension_configs', 'safe_mode', 'output_format']
         c = 0
         for arg in args:
-            if not kwargs.has_key(pos[c]):
+            if pos[c] not in kwargs:
                 kwargs[pos[c]] = arg
             c += 1
             if c == len(pos):
@@ -122,7 +121,7 @@ class Markdown:
             setattr(self, option, kwargs.get(option, default))
 
         self.safeMode = kwargs.get('safe_mode', False)
-        if self.safeMode and not kwargs.has_key('enable_attributes'):
+        if self.safeMode and 'enable_attributes' not in kwargs:
             # Disable attributes in safeMode when not explicitly set
             self.enable_attributes = False
 
@@ -160,13 +159,13 @@ class Markdown:
 
         """
         for ext in extensions:
-            if isinstance(ext, basestring):
+            if isinstance(ext, util.string_type):
                 ext = self.build_extension(ext, configs.get(ext, []))
             if isinstance(ext, Extension):
-                # might raise NotImplementedError, but that's the extension author's problem
                 ext.extendMarkdown(self, globals())
             elif ext is not None:
-                raise ValueError('Extension "%s.%s" must be of type: "markdown.Extension".' \
+                raise TypeError(
+                    'Extension "%s.%s" must be of type: "markdown.Extension"'
                     % (ext.__class__.__module__, ext.__class__.__name__))
 
         return self
@@ -194,25 +193,28 @@ class Markdown:
             module_name = '.'.join(['markdown.extensions', ext_name])
 
         # Try loading the extension first from one place, then another
-        try: # New style (markdown.extensons.<extension>)
+        try: # New style (markdown.extensions.<extension>)
             module = __import__(module_name, {}, {}, [module_name.rpartition('.')[0]])
         except ImportError:
             module_name_old_style = '_'.join(['mdx', ext_name])
             try: # Old style (mdx_<extension>)
                 module = __import__(module_name_old_style)
-            except ImportError:
-                logger.warn("Failed loading extension '%s' from '%s' or '%s'"
-                    % (ext_name, module_name, module_name_old_style))
-                # Return None so we don't try to initiate none-existant extension
-                return None
+            except ImportError as e:
+                message = "Failed loading extension '%s' from '%s' or '%s'" \
+                    % (ext_name, module_name, module_name_old_style)
+                e.args = (message,) + e.args[1:]
+                raise
 
         # If the module is loaded successfully, we expect it to define a
         # function called makeExtension()
         try:
             return module.makeExtension(configs.items())
-        except AttributeError, e:
-            logger.warn("Failed to initiate extension '%s': %s" % (ext_name, e))
-            return None
+        except AttributeError as e:
+            message = e.args[0]
+            message = "Failed to initiate extension " \
+                      "'%s': %s" % (ext_name, message)
+            e.args = (message,) + e.args[1:]
+            raise
 
     def registerExtension(self, extension):
         """ This gets called by the extension """
@@ -234,11 +236,17 @@ class Markdown:
 
     def set_output_format(self, format):
         """ Set the output format for the class instance. """
+        self.output_format = format.lower()
         try:
-            self.serializer = self.output_formats[format.lower()]
-        except KeyError:
-            raise KeyError('Invalid Output Format: "%s". Use one of %s.' \
-                               % (format, self.output_formats.keys()))
+            self.serializer = self.output_formats[self.output_format]
+        except KeyError as e:
+            valid_formats = list(self.output_formats.keys())
+            valid_formats.sort()
+            message = 'Invalid Output Format: "%s". Use one of %s.' \
+                       % (self.output_format, 
+                          '"' + '", "'.join(valid_formats) + '"')
+            e.args = (message,) + e.args[1:]
+            raise
         return self
 
     def convert(self, source):
@@ -265,19 +273,14 @@ class Markdown:
 
         # Fixup the source text
         if not source.strip():
-            return u""  # a blank unicode string
+            return ''  # a blank unicode string
 
         try:
-            source = unicode(source)
-        except UnicodeDecodeError, e:
+            source = util.text_type(source)
+        except UnicodeDecodeError as e:
             # Customise error message while maintaining original trackback
             e.reason += '. -- Note: Markdown only accepts unicode input!'
             raise
-
-        source = source.replace(util.STX, "").replace(util.ETX, "")
-        source = source.replace("\r\n", "\n").replace("\r", "\n") + "\n\n"
-        source = re.sub(r'\n\s+\n', '\n\n', source)
-        source = source.expandtabs(self.tab_length)
 
         # Split into lines and run the line preprocessors.
         self.lines = source.split("\n")
@@ -290,7 +293,7 @@ class Markdown:
         # Run the tree-processors
         for treeprocessor in self.treeprocessors.values():
             newRoot = treeprocessor.run(root)
-            if newRoot:
+            if newRoot is not None:
                 root = newRoot
 
         # Serialize _properly_.  Strip top-level tags.
@@ -339,7 +342,7 @@ class Markdown:
 
         # Read the source
         if input:
-            if isinstance(input, str):
+            if isinstance(input, util.string_type):
                 input_file = codecs.open(input, mode="r", encoding=encoding)
             else:
                 input_file = codecs.getreader(encoding)(input)
@@ -347,7 +350,7 @@ class Markdown:
             input_file.close()
         else:
             text = sys.stdin.read()
-            if not isinstance(text, unicode):
+            if not isinstance(text, util.text_type):
                 text = text.decode(encoding)
 
         text = text.lstrip('\ufeff') # remove the byte-order mark
@@ -357,7 +360,7 @@ class Markdown:
 
         # Write to file or stdout
         if output:
-            if isinstance(output, str):
+            if isinstance(output, util.string_type):
                 output_file = codecs.open(output, "w",
                                           encoding=encoding,
                                           errors="xmlcharrefreplace")
@@ -369,7 +372,14 @@ class Markdown:
                 output_file.write(html)
                 # Don't close here. User may want to write more.
         else:
-            sys.stdout.write(html)
+            # Encode manually and write bytes to stdout. 
+            html = html.encode(encoding, "xmlcharrefreplace")
+            try:
+                # Write bytes directly to buffer (Python 3).
+                sys.stdout.buffer.write(html)
+            except AttributeError:
+                # Probably Python 2, which works with bytes by default.
+                sys.stdout.write(html)
 
         return self
 
@@ -419,7 +429,7 @@ def markdownFromFile(*args, **kwargs):
     pos = ['input', 'output', 'extensions', 'encoding']
     c = 0
     for arg in args:
-        if not kwargs.has_key(pos[c]):
+        if pos[c] not in kwargs:
             kwargs[pos[c]] = arg
         c += 1
         if c == len(pos):

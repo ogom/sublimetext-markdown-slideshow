@@ -1,21 +1,23 @@
 """
 CORE MARKDOWN BLOCKPARSER
-=============================================================================
+===========================================================================
 
 This parser handles basic parsing of Markdown blocks.  It doesn't concern itself
-with inline elements such as **bold** or *italics*, but rather just catches 
+with inline elements such as **bold** or *italics*, but rather just catches
 blocks, lists, quotes, etc.
 
-The BlockParser is made up of a bunch of BlockProssors, each handling a 
+The BlockParser is made up of a bunch of BlockProssors, each handling a
 different type of block. Extensions may add/replace/remove BlockProcessors
 as they need to alter how markdown blocks are parsed.
-
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import unicode_literals
 import logging
 import re
-import util
-from blockparser import BlockParser
+from . import util
+from .blockparser import BlockParser
 
 logger =  logging.getLogger('MARKDOWN')
 
@@ -209,7 +211,7 @@ class ListIndentProcessor(BlockProcessor):
         # Step through children of tree to find matching indent level.
         while indent_level > level:
             child = self.lastChild(parent)
-            if child and (child.tag in self.LIST_TYPES or child.tag in self.ITEM_TYPES):
+            if child is not None and (child.tag in self.LIST_TYPES or child.tag in self.ITEM_TYPES):
                 if child.tag in self.LIST_TYPES:
                     level += 1
                 parent = child
@@ -230,7 +232,7 @@ class CodeBlockProcessor(BlockProcessor):
         sibling = self.lastChild(parent)
         block = blocks.pop(0)
         theRest = ''
-        if sibling and sibling.tag == "pre" and len(sibling) \
+        if sibling is not None and sibling.tag == "pre" and len(sibling) \
                     and sibling[0].tag == "code":
             # The previous block was a code block. As blank lines do not start
             # new code blocks, append this block to the previous, adding back
@@ -269,7 +271,7 @@ class BlockQuoteProcessor(BlockProcessor):
             block = '\n'.join([self.clean(line) for line in 
                             block[m.start():].split('\n')])
         sibling = self.lastChild(parent)
-        if sibling and sibling.tag == "blockquote":
+        if sibling is not None and sibling.tag == "blockquote":
             # Previous block was a blockquote so set that as this blocks parent
             quote = sibling
         else:
@@ -317,7 +319,7 @@ class OListProcessor(BlockProcessor):
         items = self.get_items(blocks.pop(0))
         sibling = self.lastChild(parent)
 
-        if sibling and sibling.tag in self.SIBLING_TAGS:
+        if sibling is not None and sibling.tag in self.SIBLING_TAGS:
             # Previous block was a list item, so set that as parent
             lst = sibling
             # make sure previous item is in a p- if the item has text, then it
@@ -485,7 +487,7 @@ class HRProcessor(BlockProcessor):
             # Recursively parse lines before hr so they get parsed first.
             self.parser.parseBlocks(parent, [prelines])
         # create hr
-        hr = util.etree.SubElement(parent, 'hr')
+        util.etree.SubElement(parent, 'hr')
         # check for lines in block after hr.
         postlines = block[self.match.end():].lstrip('\n')
         if postlines:
@@ -495,26 +497,27 @@ class HRProcessor(BlockProcessor):
 
 
 class EmptyBlockProcessor(BlockProcessor):
-    """ Process blocks and start with an empty line. """
-
-    # Detect a block that only contains whitespace 
-    # or only whitespace on the first line.
-    RE = re.compile(r'^\s*\n')
+    """ Process blocks that are empty or start with an empty line. """
 
     def test(self, parent, block):
-        return bool(self.RE.match(block))
+        return not block or block.startswith('\n')
 
     def run(self, parent, blocks):
         block = blocks.pop(0)
-        m = self.RE.match(block)
-        if m:
-            # Add remaining line to master blocks for later.
-            blocks.insert(0, block[m.end():])
-            sibling = self.lastChild(parent)
-            if sibling and sibling.tag == 'pre' and sibling[0] and \
-                    sibling[0].tag == 'code':
-                # Last block is a codeblock. Append to preserve whitespace.
-                sibling[0].text = util.AtomicString('%s/n/n/n' % sibling[0].text )
+        filler = '\n\n'
+        if block:
+            # Starts with empty line
+            # Only replace a single line.
+            filler = '\n'
+            # Save the rest for later.
+            theRest = block[1:]
+            if theRest:
+                # Add remaining lines to master blocks for later.
+                blocks.insert(0, theRest)
+        sibling = self.lastChild(parent)
+        if sibling is not None and sibling.tag == 'pre' and len(sibling) and sibling[0].tag == 'code':
+            # Last block is a codeblock. Append to preserve whitespace.
+            sibling[0].text = util.AtomicString('%s%s' % (sibling[0].text, filler))
 
 
 class ParagraphProcessor(BlockProcessor):
