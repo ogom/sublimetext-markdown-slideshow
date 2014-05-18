@@ -3,7 +3,7 @@
 
   Authors: Luke Mahé (code)
            Marcin Wichary (code and design)
-           
+
            Dominic Mazzoni (browser compatibility)
            Charles Chen (ChromeVox support)
 
@@ -12,7 +12,7 @@
 
 /**
  * ogom modifications
- *   Change the images path.
+ *   Fixed images path.
  */
 
 /* Framework */
@@ -29,7 +29,7 @@ body {
 
   height: 100%;
   min-height: 740px;
-  
+
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -47,7 +47,7 @@ body {
   height: 100%;
   left: 0;
   top: 0;
-  
+
   position: absolute;
 
   -webkit-transform: translate3d(0, 0, 0);
@@ -67,7 +67,7 @@ body {
 
   margin-left: -450px;
   margin-top: -350px;
-  
+
   padding: 40px 60px;
 
   box-sizing: border-box;
@@ -97,23 +97,23 @@ body {
 .slides.layout-faux-widescreen > article {
   margin-left: -550px;
   width: 1100px;
-  
+
   padding: 40px 160px;
 }
 
 .slides.template-default > article:not(.nobackground):not(.biglogo) {
-  background: url(../images/google-logo-small.png) 710px 625px no-repeat;  
-  
-  background-color: white;  
-} 
+  background: url(../images/google-logo-small.png) 710px 625px no-repeat;
+
+  background-color: white;
+}
 
 .slides.template-io2011 > article:not(.nobackground):not(.biglogo) {
   background: url(../images/colorbar.png) 0 600px repeat-x,
               url(../images/googleio-logo.png) 640px 625px no-repeat;
 
-  background-size: 100%, 225px;  
+  background-size: 100%, 225px;
 
-  background-color: white;  
+  background-color: white;
 }
 .slides.layout-widescreen > article:not(.nobackground):not(.biglogo),
 .slides.layout-faux-widescreen > article:not(.nobackground):not(.biglogo) {
@@ -129,14 +129,14 @@ body {
   left: 0;
   top: 0;
   width: 150px;
-  height: 700px;  
+  height: 700px;
 
   left: 50%;
   top: 50%;
 
-  cursor: pointer;  
-  margin-top: -350px;  
-  
+  cursor: pointer;
+  margin-top: -350px;
+
   tap-highlight-color: transparent;
   -o-tap-highlight-color: transparent;
   -moz-tap-highlight-color: transparent;
@@ -404,7 +404,7 @@ pre {
   font-size: 20px;
   line-height: 28px;
   padding: 5px 10px;
-  
+
   letter-spacing: -1px;
 
   margin-top: 40px;
@@ -414,7 +414,7 @@ pre {
   background: rgb(240, 240, 240);
   border: 1px solid rgb(224, 224, 224);
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, .1);
-  
+
   overflow: hidden;
 }
 
@@ -499,9 +499,9 @@ th {
   left: 60px;
   top: 644px;
   padding-right: 175px;
-  
+
   font-size: 15px;
-  letter-spacing: 0;  
+  letter-spacing: 0;
   line-height: 18px;
 }
 
@@ -509,39 +509,39 @@ q {
   display: block;
   font-size: 60px;
   line-height: 72px;
-  
+
   margin-left: 20px;
-  
+
   margin-top: 100px;
-  margin-right: 150px;    
+  margin-right: 150px;
 }
 q::before {
   content: '“';
-  
+
   position: absolute;
   display: inline-block;
   margin-left: -2.1em;
   width: 2em;
   text-align: right;
-  
+
   font-size: 90px;
   color: rgb(192, 192, 192);
 }
 q::after {
   content: '”';
 
-  position: absolute;  
+  position: absolute;
   margin-left: .1em;
 
   font-size: 90px;
-  color: rgb(192, 192, 192);  
+  color: rgb(192, 192, 192);
 }
 div.author {
-  text-align: right;  
+  text-align: right;
   font-size: 40px;
-  
+
   margin-top: 20px;
-  margin-right: 150px;    
+  margin-right: 150px;
 }
 div.author::before {
   content: '—';
@@ -591,27 +591,27 @@ article.smaller q::after {
 
 .prettyprint .str, /* string content */
 .prettyprint .atv { /* a markup attribute value */
-  color: rgb(0, 138, 53); 
-}  
+  color: rgb(0, 138, 53);
+}
 .prettyprint .kwd, /* a keyword */
 .prettyprint .tag { /* a markup tag name */
   color: rgb(0, 102, 204);
 }
 .prettyprint .com { /* a comment */
-  color: rgb(127, 127, 127); 
-  font-style: italic; 
-}  
+  color: rgb(127, 127, 127);
+  font-style: italic;
+}
 .prettyprint .lit { /* a literal value */
   color: rgb(127, 0, 0);
-}  
+}
 .prettyprint .pun, /* punctuation, lisp open bracket, lisp close bracket */
-.prettyprint .opn, 
-.prettyprint .clo { 
-  color: rgb(127, 127, 127); 
+.prettyprint .opn,
+.prettyprint .clo {
+  color: rgb(127, 127, 127);
 }
 .prettyprint .typ, /* a type name */
-.prettyprint .atn, /* a markup attribute name */ 
-.prettyprint .dec, 
+.prettyprint .atn, /* a markup attribute name */
+.prettyprint .dec,
 .prettyprint .var { /* a declaration; a variable name */
   color: rgb(127, 0, 127);
-}  
+}
