@@ -1,5 +1,5 @@
 """ mcider - converter
-Copyright(c) 2012 ogom
+Copyright(c) 2012-2014 ogom
 
 slide maker
 """
@@ -14,7 +14,7 @@ class Slide():
     """ opts
         .themes themes path
         .theme io2012(default) or io2011
-        .contents 
+        .contents
         .extensions extra fenced_code tables, ...
         .clean (boolean, default False)
     """
@@ -30,10 +30,10 @@ class Slide():
             self.options['extensions'] = []
         if 'clean' not in self.options:
             self.options['clean'] = False
-        
+
         if self.options['extensions'] is None:
             self.options['extensions'] = []
-        
+
     def maker(self, output_path=None):
         theme_path = os.path.abspath(os.path.join(self.options['themes'], self.options['theme']))
         template = self._get_template(output_path, theme_path, self.options['clean'])
@@ -83,9 +83,9 @@ class Slide():
         """ io-2012 style """
         md = Markdown(extensions=extensions)
         splits = [
-            {'horizon': '---', 'style': 'none'},
-            {'horizon': '___', 'style': 'smaller'},
-            {'horizon': '***', 'style': 'fill'}
+            {'horizon': '----', 'style': 'none'},
+            {'horizon': '____', 'style': 'smaller'},
+            {'horizon': '****', 'style': 'fill'}
         ]
 
         styles = []
@@ -136,9 +136,9 @@ class Slide():
         """ io-2011 style """
         md = Markdown(extensions=extensions)
         splits = [
-            {'horizon': '---', 'style': 'none'},
-            {'horizon': '___', 'style': 'smaller'},
-            {'horizon': '***', 'style': 'fill'}
+            {'horizon': '----', 'style': 'none'},
+            {'horizon': '____', 'style': 'smaller'},
+            {'horizon': '****', 'style': 'fill'}
         ]
 
         styles = []

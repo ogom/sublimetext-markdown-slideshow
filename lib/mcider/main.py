@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """ mcider - main
-Copyright(c) 2012 ogom
+Copyright(c) 2012-2014 ogom
 
 Mcider is to convert markdown into slideshow.
 """

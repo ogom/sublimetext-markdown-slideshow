@@ -1,11 +1,20 @@
 """ mcider - cli helper
-Copyright(c) 2012 ogom
+Copyright(c) 2012-2014 ogom
 
 Parser for command line options.
 """
 import argparse
 
-parser = argparse.ArgumentParser(description='Mcider is to convert markdown into slideshow.')
+parser = argparse.ArgumentParser(
+    description='''
+        mCider is markdown converter for slideshow.
+    '''
+)
+
+parser.add_argument(
+    '--version',
+    action='version', version='%(prog)s 0.2.1'
+)
 
 parser.add_argument(
     'file', metavar='FILE', type=argparse.FileType('r'),
@@ -25,8 +34,8 @@ parser.add_argument(
 parser.add_argument(
     '--extensions', '-x', metavar='EXTENSION', nargs='*',
     help='''
-      Provided to expand the base syntax.
-      (extra, fenced_code, tables, ...)
+        Provided to expand the base syntax.
+        (extra, fenced_code, tables, ...)
     '''
 )
 
