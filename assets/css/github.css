@@ -76,7 +76,7 @@ body a.anchor
 body h1,body h2,body h3,body h4,body h5,body h6{
   margin:1em 0 15px;
   padding:0;
-  font-weight:bold;
+  color:#444;
   line-height:1.7;
   cursor:text;
   position:relative
