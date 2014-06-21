@@ -9,6 +9,7 @@ Markdown converter for slideshow.
 * Create a contents for markdown and then preview the slides in your browser.
 
 ## Installation
+
 ### Package Control
 
 The easy to install using the [Package Control](http://wbond.net/sublime_packages/package_control).
@@ -83,7 +84,7 @@ Let's add key bindings - user.
 ]
 ```
 
-##### args
+### Args
 
 * themes        : Path of the custom themes
 * theme         : Theme of the slide. (default, io2012, io2011, ...)
@@ -100,8 +101,8 @@ Let's add key bindings - user.
 
 ## Uses
 
-* [python-mcider](https://github.com/ogom/python-mcider)
-* [Python-Markdown](https://github.com/waylan/Python-Markdown)
+* [Python-mCider](http://ogom.github.io/python-mcider/)
+* [Python-Markdown](https://pythonhosted.org/Markdown/)
 * [HTML5 slide template for Google I/O 2012](http://code.google.com/p/io-2012-slides/)
 * [HTML5 slide template for Google I/O 2011](http://code.google.com/p/html5slides/)
 
