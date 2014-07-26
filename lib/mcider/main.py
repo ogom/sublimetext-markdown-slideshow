@@ -7,8 +7,9 @@ Mcider is to convert markdown into slideshow.
 import os
 import webbrowser
 from cli_helper import parser
-import converter
-import util
+from . import converter
+from . import util
+
 
 def main():
     """ entry points """
