@@ -4,15 +4,17 @@ Copyright(c) 2012-2014 ogom
 
 Mcider is to convert markdown into slideshow.
 """
+from __future__ import print_function
 import os
 import webbrowser
-from cli_helper import parser
-import converter
-import util
+from . import cli_helper
+from . import converter
+from . import util
+
 
 def main():
     """ entry points """
-    args = parser.parse_args()
+    args = cli_helper.parser.parse_args()
 
     # path of the output file
     output_path = os.path.abspath(os.path.dirname(args.file.name))
@@ -21,11 +23,12 @@ def main():
         output_path = os.path.abspath(os.path.dirname(args.output.name))
         output_file = os.path.abspath(args.output.name)
 
+    _contents = args.file.read().decode('utf-8') if util.py2k else args.file.read()
     # slide options
     opts = {
         'themes': args.themes,
         'theme': args.theme,
-        'contents': args.file.read().decode('utf-8'),
+        'contents': _contents,
         'extensions': args.extensions,
         'clean': args.clean
     }
@@ -46,11 +49,11 @@ def main():
                 url += 'true' if args.presenter else 'false'
             webbrowser.open_new_tab(url)
     except KeyError as e:
-        print "KeyError: %s" % e
+        print("KeyError: %s" % e)
     else:
-        print "Output file is %s" % output_file
+        print("Output file is %s" % output_file)
     finally:
-        print 'Mcider is finished!'
+        print('Mcider is finished!')
 
 if __name__ == '__main__':
     main()
