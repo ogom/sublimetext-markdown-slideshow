@@ -3,7 +3,7 @@ Markdown Slideshow
 
 Markdown converter for slideshow.
 
-* A Sublime Text 2 plugin for slideshow in your web browser from markdown file.
+* A Sublime Text 2/3 plugin for slideshow in your web browser from markdown file.
 * Create a contents for markdown and then preview the slides in your browser.
 
 ## Updated
