@@ -4,9 +4,19 @@ Copyright(c) 2012-2014 ogom
 slide maker
 """
 import os
+import sys
 import shutil
-from markdown import Markdown
 from . import util
+
+
+def is_v3():
+    return sys.version_info >= (3, 0)
+
+
+if is_v3():
+    from ..markdown import Markdown
+else:
+    from markdown import Markdown
 
 
 class Slide():

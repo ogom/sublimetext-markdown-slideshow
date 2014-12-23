@@ -5,11 +5,22 @@ import sys
 import tempfile
 import webbrowser
 
-pkg_path = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.join(pkg_path, 'lib'))
 
-import mcider.converter as converter
-import mcider.util as util
+def is_v3():
+    return sys.version_info >= (3, 0)
+
+
+if is_v3():
+    from .lib.mcider import converter
+    from .lib.mcider import util
+
+else:
+    from lib.mcider import converter
+    from lib.mcider import util
+
+
+pkg_path = os.path.abspath(os.path.dirname(__file__))
+
 
 class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
     """ slideshow in your web browser from file contents """
@@ -41,7 +52,7 @@ class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
         if output_path is None:
             output_path = tempfile.mkdtemp()
             output_file = os.path.join(output_path, 'slide.html')
-        
+
         # slide maker
         slide = converter.Slide(opts)
         html = slide.maker(output_path)
