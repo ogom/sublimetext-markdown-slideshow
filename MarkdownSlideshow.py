@@ -22,8 +22,15 @@ else:
 class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
     """ slideshow in your web browser from file contents """
 
-    def run(self, edit, themes=None, theme='default', extensions=[], clean=False, output_file=None, browser=True, presenter=False, save=None, path=None):
-        """ TODO: save and path of the variable to be removed. """
+    def run(self, edit):
+        settings = sublime.load_settings('MarkdownSlideshow.sublime-settings')
+        themes = settings.get('themes', None)
+        theme = settings.get('theme', 'io2012')
+        extensions = settings.get('extensions', [])
+        output_file = settings.get('output_file', None)
+        clean = settings.get('clean', False)
+        browser = settings.get('browser', True)
+        presenter = settings.get('presenter', False)
 
         # slide options
         opts = {

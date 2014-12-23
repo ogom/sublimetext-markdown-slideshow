@@ -1,0 +1,22 @@
+{
+  // Path of the custom themes
+  "themes": null,
+
+  // Theme of the slide. (io2012, io2011, ...)
+  "theme" : "io2012",
+
+  // Provided to expand the base syntax. (extra, fenced_code, tables, ...)
+  "extensions": [],
+
+  // Theme was to clean the output.
+  "clean" : false,
+
+  // File to output slide.
+  "output_file": null,
+
+  // View in Web Browser.
+  "browser": true,
+
+  // Presenter mode. Only theme io2012.
+  "presenter": false
+}
