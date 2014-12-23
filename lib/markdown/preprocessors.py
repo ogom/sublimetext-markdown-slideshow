@@ -41,7 +41,7 @@ class Preprocessor(util.Processor):
         the (possibly modified) list of lines.
 
         """
-        pass
+        pass #pragma: no cover
 
 
 class NormalizeWhitespace(Preprocessor):
@@ -143,7 +143,7 @@ class HtmlBlockPreprocessor(Preprocessor):
         """
         Same effect as concatenating the strings in items,
         finding the character to which stringindex refers in that string,
-        and returning the item in which that character resides.
+        and returning the index of the item in which that character resides.
         """
         items.append('dummy')
         i, count = 0, 0
@@ -174,9 +174,10 @@ class HtmlBlockPreprocessor(Preprocessor):
                 else:  # raw html
                     if len(items) - right_listindex <= 1:  # last element
                         right_listindex -= 1
+                    offset = 1 if i == right_listindex else 0
                     placeholder = self.markdown.htmlStash.store('\n\n'.join(
-                        items[i:right_listindex]))
-                    del items[i:right_listindex]
+                        items[i:right_listindex + offset]))
+                    del items[i:right_listindex + offset]
                     items.insert(i, placeholder)
         return items
 

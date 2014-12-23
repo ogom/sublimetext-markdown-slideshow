@@ -19,9 +19,6 @@ else:
     from lib.mcider import util
 
 
-pkg_path = os.path.abspath(os.path.dirname(__file__))
-
-
 class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
     """ slideshow in your web browser from file contents """
 
@@ -39,6 +36,7 @@ class MarkdownSlideshowCommand(sublime_plugin.TextCommand):
 
         # custom themes or default themes
         if opts['themes'] is None or not os.path.isdir(opts['themes']):
+            pkg_path = os.path.abspath(os.path.dirname(__file__))
             opts['themes'] = os.path.join(pkg_path, 'themes')
 
         # path of the output file

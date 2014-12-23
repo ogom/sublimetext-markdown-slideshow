@@ -9,11 +9,7 @@ import shutil
 from . import util
 
 
-def is_v3():
-    return sys.version_info >= (3, 0)
-
-
-if is_v3():
+if util.is_v3():
     from ..markdown import Markdown
 else:
     from markdown import Markdown

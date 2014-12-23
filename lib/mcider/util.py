@@ -4,7 +4,6 @@ Copyright(c) 2012-2014 ogom
 """
 import codecs
 import sys
-py2k = sys.version_info < (3, 0)
 
 
 def fs_reader(path):
@@ -13,3 +12,7 @@ def fs_reader(path):
 
 def fs_writer(path, raw):
     codecs.open(path, mode='w', encoding='utf8').write(raw)
+
+
+def is_v3():
+    return sys.version_info >= (3, 0)
