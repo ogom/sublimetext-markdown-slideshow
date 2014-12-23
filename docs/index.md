@@ -73,7 +73,7 @@ Convenient syntax to slide in the presentation.
 #### Resize of Image
 
 Set the attributes of the width and height in `<img>` tag.
-`100px` is the width of the image.
+ `100px` is the width of the image.
 
 ```Markdown
 ![original](https://octodex.github.com/images/original.png){:width="100px"}
