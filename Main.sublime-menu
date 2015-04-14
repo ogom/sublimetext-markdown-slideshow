@@ -25,6 +25,19 @@
                 "args": {"file": "${packages}/User/MarkdownSlideshow.sublime-settings"},
                 "caption": "Settings – User"
               },
+              { "caption": "-" },
+              {
+                "command": "open_file",
+                "args": {"file": "${packages}/Markdown Slideshow/Default.sublime-keymap"},
+                "caption": "Key Bindings – Default"
+              },
+              {
+                "command": "open_file", "args":
+                {
+                  "file": "${packages}/User/MarkdownSlideshow.sublime-keymap"
+                },
+                "caption": "Key Bindings – User"
+              },
               { "caption": "-" }
             ]
           }
